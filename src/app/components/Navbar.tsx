@@ -3,10 +3,10 @@ import { IoMdArrowDropdown } from "react-icons/io";
 
 const Navbar = () => {
 	return (
-        <div className="mx-auto w-full  sticky top-0 z-50 ">
+        <div className="mx-auto w-full  sticky top-0 z-50 max-w-[1550px]">
             <nav className="flex items-center justify-between bg-white  w-full h-[72px] shadow-lg">
                 <div className="w-1/2 bg-white h-full overflow-hidden">
-                    <button className="h-full scale-130 w-[120px] mx-4">
+                    <button className="h-full scale-130 w-[120px] mx-4 cursor-pointer">
                         <img src="https://internshala.com//static/images/internshala_og_image.jpg" alt="" />
                     </button>
                 </div>

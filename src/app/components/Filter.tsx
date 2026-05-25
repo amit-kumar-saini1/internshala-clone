@@ -1,9 +1,15 @@
+"use client";
+
 import { CiFilter } from "react-icons/ci";
 
 
 
-
-export default function Filter() {
+export default function Filter({ profile, setProfile, location, setLocation, stipend, setStipend }) {
+    const ClearFun = () => {
+        setProfile("");
+        setLocation("");
+        setStipend(0);
+    };
     return (
         <div className="sticky top-20">
             <div className="h-[505px] w-[312px] bg-white rounded-[15px] p-5 ">
@@ -12,9 +18,9 @@ export default function Filter() {
                 </div>
                 <div className="flex flex-col ">
                     <h4 className="text-[16px] text-[#333333] mt-3.5">Profile</h4>
-                    <input type="text" placeholder="e.g. Marketing" className="border border-gray-300 my-3 hover:border-[#008BDC] rounded-md py-2 px-4 w-full hover:border-blue-500" />
+                    <input type="text" placeholder="e.g. Marketing " value={profile} onChange={(e) => setProfile(e.target.value)} className="border border-gray-300 my-3 hover:border-[#008BDC] rounded-md py-2 px-4 w-full hover:border-blue-500" />
                     <h4 className="text-[16px] text-[#333333] mt-3.5">Location</h4>
-                    <input type="text" placeholder="e.g. Delhi" className="border border-gray-300 my-3 hover:border-[#008BDC] rounded-md py-2 px-4 w-full hover:border-blue-500" />
+                    <input type="text" placeholder="e.g. Delhi" value={location} onChange={(e) => setLocation(e.target.value)} className="border border-gray-300 my-3 hover:border-[#008BDC] rounded-md py-2 px-4 w-full hover:border-blue-500" />
                 </div>
                 <div className="flex flex-col mt-3.5 gap-5">
                     <div>
@@ -28,7 +34,7 @@ export default function Filter() {
                 </div>
                 <div>
                     <h3 className="text-[16px] text-[#333333] mt-4">Desired minimum monthly stipend (₹)</h3>
-                    <input type="range" min="0" max="10000" className="w-full mt-4"/>
+                    <input type="range" min={0} max={10000} value={stipend} onChange={(e) => setStipend(Number(e.target.value))} className="w-full mt-4" />
                     <div className="flex justify-between text-[14px] text-[#666666] mt-1">
                         <span>0</span>
                         <span>2K</span>
@@ -38,7 +44,7 @@ export default function Filter() {
                         <span>10K</span>
                     </div>
                     <div className="flex justify-end mt-4">
-                        <button className="text-[#008BDC] cursor-pointer">Clear all</button>
+                        <button type="button" onClick={ClearFun} className="text-[#008BDC] cursor-pointer">Clear all</button>
                     </div>
                 </div>
             </div>

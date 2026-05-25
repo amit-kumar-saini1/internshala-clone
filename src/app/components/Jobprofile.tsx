@@ -19,12 +19,14 @@ const JobProfile = (props) => {
                         <img src={PLACEHOLDER_LOGO || props.company_logo} alt=""/>
                     </div>
                 </div>   
-                <p className="text-[13px] text-[#8A8A8A] py-1.5 flex items-center gap-2"> <IoLocationOutline />{props.location_names[0] || "Remote"} <FaIndianRupeeSign />{props.stipend.salary}<CiCalendar />{props.duration} </p>   
-                <p className="text-[13px] text-[#8A8A8A] py-1.5 overflow-hidden ">1. Fabricate prototypes, conduct testing, and work with sheet metal and other mechanical structures</p>   
-                <p className="text-[13px] text-[#8A8A8A] py-1.5">AutoCAD <span>. SolidWorks</span> <span>. Autodesk Fusion 360</span><span>. CAD</span> </p>
+                <div>
+                    <p className="text-[13px] text-[#8A8A8A] py-1.5 flex items-center gap-2"> <IoLocationOutline />{props.location_names[0]} <FaIndianRupeeSign />{props.stipend.salary}{" "}<CiCalendar />{props.duration} </p>   
+                    <p className="text-[13px] text-[#8A8A8A] py-1.5 overflow-hidden ">1. Fabricate prototypes, conduct testing, and work with sheet metal and other mechanical structures</p>   
+                    <p className="text-[13px] text-[#8A8A8A] py-1.5">AutoCAD <span>. SolidWorks</span> <span>. Autodesk Fusion 360</span><span>. CAD</span> </p>
+                </div>
                 <div className=" flex  items-center gap-4 mt-3">
-                    <h3 className="text-[15px] bg-[#f1ffe5] text-[#28a745] rounded-full px-5 items-center flex items-center gap-2"> <PiClockClockwiseLight />Just now</h3>
-                    <h3 className="text-[15px] bg-[#e8e8e8] rounded-full px-5 items-center flex items-center gap-2"><MdOfflineBolt className="text-amber-300" />Be an early applicant</h3>
+                    <h3 className="text-[12px] bg-[#f1ffe5] text-[#28a745] rounded-full px-1.5 items-center flex items-center gap-2"> <PiClockClockwiseLight  className="text-[18px]"/>Just now</h3>
+                    <h3 className="text-[12px] bg-[#e8e8e8] rounded-full px-1.5  items-center flex items-center gap-2 "><MdOfflineBolt className="text-amber-300 text-[18px]" />Be an early applicant</h3>
                 </div>                           
             </div>
         </div>

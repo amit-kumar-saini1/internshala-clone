@@ -13,18 +13,62 @@ import Filter from "../components/Filter";
 
 function Internships() {
     const [jobData, setJobData] = useState(null);
+    const [profile, setProfile] = useState("");
+    const [location, setLocation] = useState("");
+    const [minStipend, setMinStipend] = useState(0);
     useEffect(() => {
-        const getData = async () => {
-            const data = await getInternships();
-            console.log(data.internships_meta[65517].profile_name);
-            const allJobs = data.internship_ids.map((id) => {
-                return data.internships_meta[id];
-              });
-            setJobData(allJobs);
-        };
+                const getData = async () => {
+                        const data = await getInternships();
+                        // console.log(data.internships_meta[65517].profile_name);
+                        const allJobs = data.internship_ids.map((id) => {
+                                return data.internships_meta[id];
+                            });
+                        setJobData(allJobs);
+                };
 
         getData();
     }, []);
+
+    
+    useEffect(() => {
+        console.log("Location:", location);
+    }, [location]);
+
+    const getJobStipendValue = (job) => {
+        const sv1 = job?.stipend?.salary?.salaryValue1;
+        if (typeof sv1 === "number") return sv1;
+        if (typeof sv1 === "string" && sv1.trim() !== "") {
+            const n = Number(sv1);
+            if (!isNaN(n)) return n;
+        }
+        const raw = job?.stipend?.salary;
+        if (typeof raw === "number") return raw;
+        if (typeof raw === "string") {
+            const digits = raw.replace(/[^0-9]/g, "");
+            const n = Number(digits);
+            if (!isNaN(n)) return n;
+        }
+        return 0;
+    };
+
+    const filteredJobs = jobData
+        ? jobData.filter((job) => {
+              const profileQuery = profile.trim().toLowerCase();
+              const locationQuery = location.trim().toLowerCase();
+
+              const profileMatch =   profileQuery === "" || (job.profile_name || "").toLowerCase().includes(profileQuery);
+
+              const firstLocation = Array.isArray(job.location_names) && job.location_names.length > 0 ? (job.location_names[0] || "") : "";
+              const locationMatch =
+                  locationQuery === "" || firstLocation.toLowerCase().includes(locationQuery);
+
+                            
+                            const jobStipendValue = getJobStipendValue(job);
+                            const stipendMatch = minStipend === 0 || jobStipendValue >= minStipend;
+
+                            return profileMatch && locationMatch && stipendMatch;
+          })
+        : [];
     return (
         <div className="w-full bg-[#f8f8f8]">
             <Navbar className="sticky top-0" />
@@ -44,10 +88,10 @@ function Internships() {
                     </div>
 
                     <div className="flex w-full  justify-between">
-                        <div>   {/*  filleter part*/}
-                            <Filter />
+                        <div>   {/*  filleter part yaha par banega*/}
+                            <Filter profile={profile} setProfile={setProfile} location={location} setLocation={setLocation} stipend={minStipend} setStipend={setMinStipend} />
                         </div>       
-                        <div className="flex flex-col gap-8 ">          {/*   offer and job  cart layout */}
+                        <div className="flex flex-col gap-8 ">          {/*   offer and job  cart layout box wala  */}
                             <div className="bg-white hover:shadow-lg hover:scale-103 duration-500 rounded-[15px] hover:cursor-pointer p-3" style={{ width: "616px", height: "182px" }}>
                                 <div className="flex space-between items-center justify-between w-full">
                                     <h1 className="text-[18px] font-weight-[800]">
@@ -66,10 +110,16 @@ function Internships() {
                                 </div>
                             </div>
                             {jobData ? (
-                                jobData.map((job ,index) => (
-                                    <JobProfile  key={index} {...job}/>))
-                                ) : (<h1>Loading...</h1>)
-                            }
+                                filteredJobs.length > 0 ? (
+                                    filteredJobs.map((job, index) => (
+                                        <JobProfile key={index} {...job} />
+                                    ))
+                                ) : (
+                                    <h1>No internships match your filters</h1>
+                                )
+                            ) : (
+                                <h1>Loading...</h1>
+                            )}
                             
                         </div>
 
