@@ -1,5 +1,5 @@
 <h1>Intrernshala internship clone page </h1>
-
+<div>
 project datails:
 
  I have made this project using next js ,react js and tailwind css.
@@ -14,6 +14,6 @@ tools used:
  vs code 
  github copilot (auto code suggestion mode)
  github (for version control and code hosting)
- cloudfare (for hosting the project)
-
+ vercel (for hosting the project)
+</div>
 
