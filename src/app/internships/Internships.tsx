@@ -71,7 +71,7 @@ function Internships() {
         : [];
     return (
         <div className="w-full bg-[#f8f8f8]">
-            <Navbar className="sticky top-0" />
+            <Navbar />
             <div className="container mx-auto mt-8" style={{ width: "1225px" }}>
                 <div className="flex flex-col items-center justify-center mx-auto gap-7" style={{ width: "956px" }}>
                     <div className="w-full flex justify-start">
