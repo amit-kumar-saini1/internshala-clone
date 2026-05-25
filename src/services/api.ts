@@ -1,4 +1,4 @@
-
+"use client";
 export const getInternships = async () => {
   const url = "https://internshala.com/hiring/search";
   try {

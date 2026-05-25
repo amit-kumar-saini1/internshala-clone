@@ -1,3 +1,5 @@
+"use client";
+
 import { IoLocationOutline } from "react-icons/io5";
 import { CiCalendar } from "react-icons/ci";
 import { FaIndianRupeeSign } from "react-icons/fa6";
