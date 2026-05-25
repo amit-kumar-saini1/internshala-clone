@@ -1,134 +1,199 @@
 "use client";
-import Navbar from "../components/Navbar";
-import { IoIosArrowForward } from "react-icons/io";
-import { IoMdArrowRoundForward } from "react-icons/io";
+
+import { useDeferredValue, useState } from "react";
 import { CiClock2 } from "react-icons/ci";
+import { IoIosArrowForward, IoMdArrowRoundForward } from "react-icons/io";
 import { RiCouponLine } from "react-icons/ri";
-import JobProfile from "../components/Jobprofile";
-import { useEffect, useState } from "react";
-import { getInternships } from "../../services/api";
+import type { Internship } from "../../services/api";
 import Filter from "../components/Filter";
+import JobProfile from "../components/Jobprofile";
+import Navbar from "../components/Navbar";
 
+type InternshipsProps = {
+  internships: Internship[];
+};
 
-
-function Internships() {
-    const [jobData, setJobData] = useState(null);
-    const [profile, setProfile] = useState("");
-    const [location, setLocation] = useState("");
-    const [minStipend, setMinStipend] = useState(0);
-    useEffect(() => {
-                const getData = async () => {
-                        const data = await getInternships();
-                        // console.log(data.internships_meta[65517].profile_name);
-                        const allJobs = data.internship_ids.map((id) => {
-                                return data.internships_meta[id];
-                            });
-                        setJobData(allJobs);
-                };
-
-        getData();
-    }, []);
-
-    
-    useEffect(() => {
-        console.log("Location:", location);
-    }, [location]);
-
-    const getJobStipendValue = (job) => {
-        const sv1 = job?.stipend?.salary?.salaryValue1;
-        if (typeof sv1 === "number") return sv1;
-        if (typeof sv1 === "string" && sv1.trim() !== "") {
-            const n = Number(sv1);
-            if (!isNaN(n)) return n;
-        }
-        const raw = job?.stipend?.salary;
-        if (typeof raw === "number") return raw;
-        if (typeof raw === "string") {
-            const digits = raw.replace(/[^0-9]/g, "");
-            const n = Number(digits);
-            if (!isNaN(n)) return n;
-        }
-        return 0;
-    };
-
-    const filteredJobs = jobData
-        ? jobData.filter((job) => {
-              const profileQuery = profile.trim().toLowerCase();
-              const locationQuery = location.trim().toLowerCase();
-
-              const profileMatch =   profileQuery === "" || (job.profile_name || "").toLowerCase().includes(profileQuery);
-
-              const firstLocation = Array.isArray(job.location_names) && job.location_names.length > 0 ? (job.location_names[0] || "") : "";
-              const locationMatch =
-                  locationQuery === "" || firstLocation.toLowerCase().includes(locationQuery);
-
-                            
-                            const jobStipendValue = getJobStipendValue(job);
-                            const stipendMatch = minStipend === 0 || jobStipendValue >= minStipend;
-
-                            return profileMatch && locationMatch && stipendMatch;
-          })
-        : [];
-    return (
-        <div className="w-full bg-[#f8f8f8]">
-            <Navbar />
-            <div className="container mx-auto mt-8" style={{ width: "1225px" }}>
-                <div className="flex flex-col items-center justify-center mx-auto gap-7" style={{ width: "956px" }}>
-                    <div className="w-full flex justify-start">
-                        <h5 className="flex items-center justify-items-start gap-2 text-[#666666] text-[14px]">
-                            Home <IoIosArrowForward /> Internships
-                        </h5>
-                    </div>
-
-                    <div className="w-full flex justify-end">
-                        <div className="flex items-center gap-4 flex-col justify-center" style={{ width: "616px", height: "56px" }}>
-                            <h1 className="text-[20px] font-bold">6821 Total Internships</h1>
-                            <p className="text-[14px] text-[#666666]">Latest Summer Internships in India</p>
-                        </div>
-                    </div>
-
-                    <div className="flex w-full  justify-between">
-                        <div>   {/*  filleter part yaha par banega*/}
-                            <Filter profile={profile} setProfile={setProfile} location={location} setLocation={setLocation} stipend={minStipend} setStipend={setMinStipend} />
-                        </div>       
-                        <div className="flex flex-col gap-8 ">          {/*   offer and job  cart layout box wala  */}
-                            <div className="bg-white hover:shadow-lg hover:scale-103 duration-500 rounded-[15px] hover:cursor-pointer p-3" style={{ width: "616px", height: "182px" }}>
-                                <div className="flex space-between items-center justify-between w-full">
-                                    <h1 className="text-[18px] font-weight-[800]">
-                                        Get Internship and Job Preparation training FREE!
-                                    </h1>
-                                    <span className="bg-[#FF8C00] text-white px-3 py-1 rounded-full text-[12px] font-weight-[800]">
-                                        OFFER
-                                    </span>
-                                </div>
-                                <p className="text-[14px] text-[#666666] py-2">By enrolling in trainings at 55% + 10% OFF</p>
-                                <p className="text-[14px] text-[#666666] py-2 flex items-center gap-2"><RiCouponLine /> Use coupon: <span className="font-bold">GD10</span><CiClock2 /> Offer ends in 02d: 09h: 57s</p>
-                                <p className="text-[14px] text-[#666666]">Choose from Web Dev., Python, Data Science, Marketing & more</p>
-                                <div className="flex justify-between mt-4">
-                                    <button className="bg-[#e8e8e8] text-[#666666] px-4 rounded-2xl">Government Certified Trainings</button>
-                                    <h5 className="text-[14px] text-[#008BDC] font-bold flex items-center gap-1">Enroll now <IoMdArrowRoundForward /></h5>
-                                </div>
-                            </div>
-                            {jobData ? (
-                                filteredJobs.length > 0 ? (
-                                    filteredJobs.map((job, index) => (
-                                        <JobProfile key={index} {...job} />
-                                    ))
-                                ) : (
-                                    <h1>No internships match your filters</h1>
-                                )
-                            ) : (
-                                <h1>Loading...</h1>
-                            )}
-                            
-                        </div>
-
-                    </div>
-                    {/* yaha pr filter banega */}
-                </div>
-            </div>
-        </div>
-    );
+function getDurationInMonths(duration: string) {
+  const match = duration.match(/\d+/);
+  return match ? Number(match[0]) : 0;
 }
 
-export default Internships;
+export default function Internships({ internships }: InternshipsProps) {
+  const internshipList = internships ?? [];
+  const [profile, setProfile] = useState("");
+  const [location, setLocation] = useState("");
+  const [duration, setDuration] = useState("");
+  const [minStipend, setMinStipend] = useState(0);
+  const [workFromHomeOnly, setWorkFromHomeOnly] = useState(false);
+  const [partTimeOnly, setPartTimeOnly] = useState(false);
+
+  const deferredProfile = useDeferredValue(profile);
+  const deferredLocation = useDeferredValue(location);
+
+  const filteredJobs = internshipList.filter((job) => {
+    const profileQuery = deferredProfile.trim().toLowerCase();
+    const locationQuery = deferredLocation.trim().toLowerCase();
+    const requestedDuration = Number(duration);
+
+    const profileMatch =
+      profileQuery === "" || job.profileName.toLowerCase().includes(profileQuery);
+
+    const locationMatch =
+      locationQuery === "" ||
+      job.locationNames.some((item) => item.toLowerCase().includes(locationQuery)) ||
+      (job.workFromHome && "work from home".includes(locationQuery));
+
+    const durationMatch =
+      duration === "" || getDurationInMonths(job.duration) <= requestedDuration;
+
+    const stipendMatch = job.stipendValue >= minStipend;
+    const workFromHomeMatch = !workFromHomeOnly || job.workFromHome;
+    const partTimeMatch = !partTimeOnly || job.partTime;
+
+    return (
+      profileMatch &&
+      locationMatch &&
+      durationMatch &&
+      stipendMatch &&
+      workFromHomeMatch &&
+      partTimeMatch
+    );
+  });
+
+  const activeFilterCount = [
+    profile,
+    location,
+    duration,
+    minStipend > 0 ? "stipend" : "",
+    workFromHomeOnly ? "wfh" : "",
+    partTimeOnly ? "part-time" : "",
+  ].filter(Boolean).length;
+
+  return (
+    <div className="min-h-screen bg-[#f3f5f7] text-[#1f2b3d]">
+      <Navbar />
+
+      <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-6 lg:px-6">
+        <div className="flex items-center gap-2 text-sm text-[#6b7280]">
+          <span>Home</span>
+          <IoIosArrowForward className="text-xs" />
+          <span className="font-medium text-[#2d3748]">Internships</span>
+        </div>
+
+        <section className="rounded-[28px] bg-linear-to-r from-[#ffffff] via-[#f6fbff] to-[#eef8ff] px-6 py-8 shadow-[0_24px_50px_rgba(14,30,62,0.08)] ring-1 ring-[#dbe8f4] lg:px-8">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <span className="inline-flex rounded-full bg-[#e7f4ff] px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#0a66c2]">
+                Internship Search
+              </span>
+              <h1 className="mt-4 text-3xl font-semibold tracking-tight text-[#16324f] lg:text-4xl">
+                Find internships that match your profile, city, budget, and timeline.
+              </h1>
+              <p className="mt-3 max-w-xl text-sm leading-6 text-[#5f6f82]">
+                A frontend-only filtered experience inspired by Internshala, with faster scanning and a cleaner responsive layout.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl bg-white px-4 py-3 shadow-sm ring-1 ring-[#e5edf5]">
+                <p className="text-xs uppercase tracking-[0.16em] text-[#7b8794]">Results</p>
+                <p className="mt-2 text-2xl font-semibold text-[#16324f]">{filteredJobs.length}</p>
+              </div>
+              <div className="rounded-2xl bg-white px-4 py-3 shadow-sm ring-1 ring-[#e5edf5]">
+                <p className="text-xs uppercase tracking-[0.16em] text-[#7b8794]">Loaded</p>
+                <p className="mt-2 text-2xl font-semibold text-[#16324f]">{internshipList.length}</p>
+              </div>
+              <div className="col-span-2 rounded-2xl bg-[#0a66c2] px-4 py-3 text-white shadow-sm sm:col-span-1">
+                <p className="text-xs uppercase tracking-[0.16em] text-[#cfe8ff]">Filters</p>
+                <p className="mt-2 text-2xl font-semibold">{activeFilterCount}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="grid gap-6 lg:grid-cols-[320px_minmax(0,1fr)] lg:items-start">
+          <Filter
+            duration={duration}
+            location={location}
+            partTimeOnly={partTimeOnly}
+            profile={profile}
+            setDuration={setDuration}
+            setLocation={setLocation}
+            setPartTimeOnly={setPartTimeOnly}
+            setProfile={setProfile}
+            setStipend={setMinStipend}
+            setWorkFromHomeOnly={setWorkFromHomeOnly}
+            stipend={minStipend}
+            workFromHomeOnly={workFromHomeOnly}
+          />
+
+          <div className="flex flex-col gap-5">
+            <div className="rounded-[24px] bg-white p-5 shadow-[0_16px_40px_rgba(15,23,42,0.08)] ring-1 ring-[#e6edf5]">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <div className="mb-3 inline-flex rounded-full bg-[#fff1df] px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#d97706]">
+                    Offer
+                  </div>
+                  <h2 className="text-xl font-semibold text-[#16324f]">
+                    Get internship and job preparation training free with selected programs.
+                  </h2>
+                  <p className="mt-2 text-sm leading-6 text-[#607080]">
+                    Choose from web development, Python, data science, marketing, and more while keeping the search experience front and center.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl bg-[#f8fbff] px-4 py-3 text-sm text-[#46607a] ring-1 ring-[#deebf7]">
+                  <p className="flex items-center gap-2">
+                    <RiCouponLine className="text-[#0a66c2]" />
+                    Coupon: <span className="font-semibold text-[#16324f]">GD10</span>
+                  </p>
+                  <p className="mt-2 flex items-center gap-2">
+                    <CiClock2 className="text-[#0a66c2]" />
+                    Offer ends in 02d : 09h : 57m
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <span className="inline-flex w-fit rounded-full bg-[#eef5fb] px-4 py-2 text-sm font-medium text-[#516273]">
+                  Government certified trainings
+                </span>
+                <button
+                  type="button"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-[#0a66c2]"
+                >
+                  Enroll now
+                  <IoMdArrowRoundForward className="text-base" />
+                </button>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between px-1">
+              <div>
+                <h2 className="text-lg font-semibold text-[#16324f]">
+                  {filteredJobs.length} internships available
+                </h2>
+                <p className="text-sm text-[#6b7280]">
+                  Filtered instantly on the frontend with no extra requests.
+                </p>
+              </div>
+            </div>
+
+            {filteredJobs.length > 0 ? (
+              filteredJobs.map((job) => <JobProfile key={job.id} internship={job} />)
+            ) : (
+              <div className="rounded-[24px] border border-dashed border-[#c7d6e5] bg-white px-6 py-10 text-center shadow-sm">
+                <h3 className="text-lg font-semibold text-[#16324f]">
+                  No internships match these filters
+                </h3>
+                <p className="mt-2 text-sm text-[#66788a]">
+                  Try clearing one or two filters to widen the search.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+}
