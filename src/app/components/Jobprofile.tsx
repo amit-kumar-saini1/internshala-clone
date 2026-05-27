@@ -10,8 +10,8 @@ const PLACEHOLDER_LOGO = "https://internshala.com/static/images/search/placehold
 
 const JobProfile = (props) => {
     return (
-        <div>
-            <div className="w-154 bg-white h-50 hover:shadow-lg hover:scale-103 duration-500 rounded-[15px] hover:cursor-pointer p-3 overflow-hidden">  
+        <div className=" lg:px-0 ">
+            <div className="w-full lg:w-154 bg-white h-fit hover:shadow-lg hover:scale-103 duration-500 rounded-[15px] hover:cursor-pointer p-3 overflow-hidden">  
                 <div className="flex justify-between">
                     <div>
                         <h1 className="text-bold-[600]">{props.profile_name}</h1>

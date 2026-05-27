@@ -8,6 +8,8 @@ import JobProfile from "../components/Jobprofile";
 import { useEffect, useState } from "react";
 import { getInternships } from "../../services/api";
 import Filter from "../components/Filter";
+import { CiFilter } from "react-icons/ci";
+
 
 
 
@@ -16,6 +18,11 @@ function Internships() {
     const [profile, setProfile] = useState("");
     const [location, setLocation] = useState("");
     const [minStipend, setMinStipend] = useState(0);
+    const [showFilter, setShowFilter] = useState(false);
+
+    const handleToggleFilter = () => {
+        setShowFilter(!showFilter);
+    }
     useEffect(() => {
                 const getData = async () => {
                         const data = await getInternships();
@@ -70,30 +77,43 @@ function Internships() {
           })
         : [];
     return (
-        <div className="w-full bg-[#f8f8f8]">
+        <div className="w-full bg-[#f8f8f8] ">
+            <div className="w-full h-full fixed bg-[rgba(0,0,0,0.7)] z-90 duration-500 lg:hidden" style={{
+                    opacity: showFilter ? 1 : 0,
+                    visibility: showFilter ? "visible" : "hidden",
+                }} onClick={handleToggleFilter} >
+                <div className="w-[65%] bg-white h-full " onClick={(e) => e.stopPropagation()} >
+                    <Filter profile={profile} setProfile={setProfile} location={location} setLocation={setLocation} stipend={minStipend} setStipend={setMinStipend} handleToggleFilter={handleToggleFilter} />
+                </div>
+            </div>
             <Navbar />
-            <div className="container mx-auto mt-8" style={{ width: "1225px" }}>
-                <div className="flex flex-col items-center justify-center mx-auto gap-7" style={{ width: "956px" }}>
-                    <div className="w-full flex justify-start">
+            <div className="container mx-auto mt-8 w-full" >
+                <div className="flex flex-col items-center justify-center mx-auto gap-7 w-full lg:w-[956px] mx-auto" >
+                    <div className="w-full flex justify-start hidden lg:block">
                         <h5 className="flex items-center justify-items-start gap-2 text-[#666666] text-[14px]">
                             Home <IoIosArrowForward /> Internships
                         </h5>
                     </div>
+                    <div className=" flex  lg:hidden  justify-start w-full md:ml-40 px-5 cursor-pointer ">
+                        <button className="bg-white rounded-[15px] flex p-2 items-center gap-2 border-2 border-[#DDD]" onClick={handleToggleFilter} > 
+                             Filters <CiFilter  color="#007bff" font-bold  />
+                        </button>
+                    </div>
 
-                    <div className="w-full flex justify-end">
+                    <div className="w-full flex justify-center lg:justify-end">
                         <div className="flex items-center gap-4 flex-col justify-center" style={{ width: "616px", height: "56px" }}>
                             <h1 className="text-[20px] font-bold">6821 Total Internships</h1>
                             <p className="text-[14px] text-[#666666]">Latest Summer Internships in India</p>
                         </div>
                     </div>
 
-                    <div className="flex w-full  justify-between">
-                        <div>   {/*  filleter part yaha par banega*/}
-                            <Filter profile={profile} setProfile={setProfile} location={location} setLocation={setLocation} stipend={minStipend} setStipend={setMinStipend} />
+                    <div className="flex w-full flex-col lg:flex-row justify-between lg:gap-7 ">
+                        <div className="hidden lg:block">   {/*  filleter part yaha par banega*/}
+                            <Filter profile={profile} setProfile={setProfile} location={location} setLocation={setLocation} stipend={minStipend} setStipend={setMinStipend} handleToggleFilter={handleToggleFilter} />
                         </div>       
-                        <div className="flex flex-col gap-8 ">          {/*   offer and job  cart layout box wala  */}
-                            <div className="bg-white hover:shadow-lg hover:scale-103 duration-500 rounded-[15px] hover:cursor-pointer p-3" style={{ width: "616px", height: "182px" }}>
-                                <div className="flex space-between items-center justify-between w-full">
+                        <div className="flex flex-col gap-8 w-fit h-fit lg:w-[616px] px-[15px] items-center mx-auto ">          {/*   offer and job  cart layout box wala  */}
+                            <div className="bg-white hover:shadow-lg  hover:scale-103 w-full duration-500 rounded-[15px] hover:cursor-pointer  p-3  lg:w-154 h-fit lg:w-[616px] lg:min-h-[182px]">
+                                <div className="flex space-between items-center  w-full">
                                     <h1 className="text-[18px] font-weight-[800]">
                                         Get Internship and Job Preparation training FREE!
                                     </h1>
