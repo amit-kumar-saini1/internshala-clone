@@ -11,7 +11,7 @@ export default function Filter({ profile, setProfile, location, setLocation, sti
         setStipend(0);
     };
     return (
-        <div>
+        <div className=" sticky top-20">
             <div className="block lg:hidden flex flex-col p-[40px] gap-5">
                 <div>
                      <p className="text-[22px]">Filters</p>
